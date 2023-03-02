@@ -1,0 +1,11 @@
+version: '3.3'
+services:
+ dumbmerch-fe:
+   container_name: dumbmerch-fe
+   image: dumbmerch-fe-slim:1
+   stdin_open: true
+   ports:
+     - 3000:3000
+   restart: always
+   volumes:
+     - ~/fe-dumbmerch/src/config/api.js:/dumbmerch-fe/src/config/api.js
