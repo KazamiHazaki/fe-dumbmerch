@@ -10,16 +10,65 @@ pipeline{
 
     stages{
         stage ('delete & git pull'){
-            steps {
-                sshagent(credentials: ['aziz']) {
-                sh '''
-                [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
-                ssh-keyscan -t rsa,dsa example.com >> ~/.ssh/known_hosts
-                ssh user@example.com ...
-                '''
+            steps{
+                sshagent([secret]) {
+                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+                    cd ${directory}
+                    docker-compose stop ${container}
+                    docker container prune -f
+                    git pull origin ${branch}
+                    exit
+                    EOF"""
                 }
             }
         }
- 
+        stage ('dockerize app'){
+            steps{
+                sshagent([secret]) {
+                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+                    cd ${directory}
+                    docker build -t kazamisei98/dumbplay-fe-slim:0.1 .
+                    exit
+                    EOF"""
+                }
+            }
+        }
+        stage ('deploy app '){
+            steps{
+                sshagent([secret]) {
+                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+                    cd ${directory}
+                    docker-compose up -d
+                    exit
+                    EOF"""
+                }
+            }
+        }
+
+           stage ('upload image to dockerhub '){
+            steps{
+                sshagent([secret]) {
+                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+                    cd ${directory}
+                    docker push kazamisei98/dumbplay-fe-slim:0.1
+                    exit
+                    EOF"""
+                }
+            }
+        }
+
+
+        stage('Push Notification ') {
+
+steps {
+
+     sshagent([secret]) {
+                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+                    curl -s -X POST https://api.telegram.org/bot6033722165:AAFqBd0-IxtZW4MacIekfTvzql1qLdRCbCk/sendMessage -d chat_id=6192024733 -d text='Build Frontend Complete Bang'
+                    EOF"""
+
+                }
+    }   
+}
     }
 }
