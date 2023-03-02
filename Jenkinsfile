@@ -57,18 +57,5 @@ pipeline{
             }
         }
 
-
-        stage('Push Notification ') {
-
-steps {
-
-     sshagent([secret]) {
-                    sh """ssh -tt -o StrictHostKeyChecking=no ${server} << EOF
-                    curl -s -X POST https://api.telegram.org/bot6033722165:AAFqBd0-IxtZW4MacIekfTvzql1qLdRCbCk/sendMessage -d chat_id=6192024733 -d text='Build Frontend Complete Bang'
-                    EOF"""
-
-                }
-    }   
-}
     }
 }
