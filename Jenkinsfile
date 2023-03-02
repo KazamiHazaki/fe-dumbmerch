@@ -11,7 +11,7 @@ pipeline{
     stages{
         stage ('delete & git pull'){
             steps {
-                sshagent(credentials: ['ssh-credentials-id']) {
+                sshagent(credentials: ['aziz']) {
                 sh '''
                 [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
                 ssh-keyscan -t rsa,dsa example.com >> ~/.ssh/known_hosts
