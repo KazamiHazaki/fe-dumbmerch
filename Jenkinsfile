@@ -27,7 +27,7 @@ pipeline{
                 sshagent([secret]) {
                     sh """ssh -tt -o StrictHostKeyChecking=no ${server} << EOF
                     cd ${directory}
-                    docker build -t kazamisei98/dumbplay-fe-slim:0.1 .
+                    docker build -t kazamisei98/dumbmerch-fe-slim:0.1 .
                     exit
                     EOF"""
                 }
@@ -50,7 +50,7 @@ pipeline{
                 sshagent([secret]) {
                     sh """ssh -tt -o StrictHostKeyChecking=no ${server} << EOF
                     cd ${directory}
-                    docker push kazamisei98/dumbplay-fe-slim:0.1
+                    docker push kazamisei98/dumbmerch-fe-slim:0.1
                     exit
                     EOF"""
                 }
